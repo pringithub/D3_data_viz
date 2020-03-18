@@ -1,0 +1,19 @@
+https://www.coursera.org/learn/information-visualization-programming-d3js/lecture/65gYX/practice-zoom
+
+let zoom = d3.zoom()
+zoom.on("zoom", function() {
+	let newXScale = d3.event.transform.rescaleX(xScale) // xScale defined prev
+	let newYScale = d3.event.transform.rescaleY(yScale)
+
+	//[x/y][Axis/AxisGroup] defined prev
+	xAxis.scale(newXScale)
+	xAxisGroup.call(xAxis)
+	yAxis.scale(newYScale)
+	yAxisGroup.call(yAxis)
+
+	join.merge(newelements)
+		.attr("cx", d => newXScale(+d.Weight))
+		.attr("cy", d => newYScale(+d.Height))
+
+})
+container.call(zoom)

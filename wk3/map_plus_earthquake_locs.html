@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<svg id="container" height="500" width="500">
+		<g id="body" style="transform: translate(50px,50px);"></g>
+	</svg>
+</body>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+	let body = d3.select("#body")
+	Promise.all([
+		//d3.csv("dataset.csv"), //arr of countries with single greatest earthquake - 
+							   //I don't have this file :/
+		d3.json("countries.geo.json")
+	]).then(showData)
+
+	function showData(datasources) {
+		mapInfo = datasources[0]
+		//data = datasources[1]
+
+		let bodyHeight = 400
+		let bodyWidth = 400
+
+		let projection = d3.geoMercator() // geoNaturalEarth1(), geoMercator(), geoOrthographic(), etc
+			.scale(80)
+			.translate([bodyWidth/2,bodyHeight/2])
+
+		let path = d3.geoPath()
+			.projection(projection)
+
+		body.selectAll("path")
+			.data(mapInfo.features)
+			.enter().append("path")
+			.attr("d", d => path(d))
+			.attr("stroke", "#999")
+			.attr("fill", "#eee")
+
+		body.selectAll("circle")
+			.data(data)
+			.enter()
+			.append("circle")
+			.attr("r", 3)
+			.attr("fill", "#0055AA")
+			.style("opacity", "0.5") // lets user see how many quakes there are in a region
+			// `+` converts string to num
+			.attr("cx", d => projection([+d.Longitude, +d.Latitude])[0]) 
+			.attr("cy", d => projection([+d.Longitude, +d.Latitude])[1]) 
+
+
+		console.log(mapInfo)
+	}
+
+
+
+
+</script>
+</html>

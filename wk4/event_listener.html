@@ -1,0 +1,17 @@
+https://www.coursera.org/learn/information-visualization-programming-d3js/lecture/ebXXb/practice-listening-to-events
+
+.on("click", d => {
+	d3.select("#details").text(d.Name)
+}
+.on("mouseover", function() {
+	this.style.fill = "red" // can't use arrow `=>` functions when using `this`
+})
+.on("mouseout", function() {
+	this.style.fill = "blue"
+})
+
+d3.select("#container").on("mousemove", () => {
+	let x = d3.mouse(this)[0] //d3.event.x
+	let y = d3.event.y
+	line.attr("transform", `translate(${x},-10)`)
+})

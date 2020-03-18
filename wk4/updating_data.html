@@ -1,0 +1,26 @@
+https://www.coursera.org/learn/information-visualization-programming-d3js/lecture/ebXXb/practice-listening-to-events
+
+let name = d3.select("#name").node().value
+let weight = d3.select("#weight").node().value
+let client = data.find(d => d.Name === name)
+if (client) {
+	client.Weight = weight
+} else {
+	data.push({
+		Name: name,
+		Weight: weight
+	})
+}
+showData(data)
+
+///////
+
+join.exit().remove()
+or
+join.exit().transition().remove()
+
+d3.select("#min-weight").on("change", function() {
+	let value = this.value;
+	let filteredData = data.filter(c => +c.Weight > value)
+	showData(filteredData)
+})

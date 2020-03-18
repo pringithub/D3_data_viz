@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<svg id="container" height="300" width="500">
+		<g id="body" style="transform: translate(0px,0px);"></g>
+	</svg>
+</body>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+	let body = d3.select("#body")
+
+	Promise.all([
+		d3.csv("dataset.csv"), //arr of countries with single greatest earthquake - 
+							   //I don't have this file :/
+		d3.json("countries.geo.json")
+	]).then(showData)
+
+	function showData(datasources) {
+		let mapInfo = datasources[1]
+		let data = datasources[0]
+
+		let dataIndex = {}
+		for (let c of data){
+			let country = c.Country;
+			dataIndex[country] = +c.Magnitude
+		}
+
+		mapInfo.featurse = mapInfo.features.map(d => {
+			let country = d.properties.name
+			let magnitude = dataIndex[country]
+			d.properties.magnitude = magnitude
+			return d
+		})
+		let maxEarthquake = d3.max(mapInfo.feautres, 
+			d => d.properties.Magnitude)
+		let medianEarthquake = d3.median(mapInfo.feautres, 
+			d => d.properties.Magnitude)
+
+		let cScale = d3.scaleLinear()
+			.domain([0, medianEarthquake, maxEarthquake])
+			.range(["white","orange","red"]) // below medianEarthquake -> [white,orange],
+											 // above -> [orange, red]
+
+		let bodyHeight = 400
+		let bodyWidth = 400
+
+		let projection = d3.geoNaturalEarth1() // geoNaturalEarth1(), geoMercator()
+			.scale(80)
+			.translate([bodyWidth/2,bodyHeight/2])
+
+		let path = d3.geoPath()
+			.projection(projection)
+
+		body.selectAll("path")
+			.data(mapInfo.features)
+			.enter().append("path")
+			.attr("d", d => path(d))
+			.attr("stroke", "black")
+			.attr("fill", 
+				d => d.properties.Magnitude ?
+					cScale(d.properties.Magnitude):
+					"white"
+				)
+
+
+		//console.log(mapInfo)
+	}
+
+
+
+
+</script>
+</html>

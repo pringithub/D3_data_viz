@@ -1,0 +1,26 @@
+https://www.coursera.org/learn/information-visualization-programming-d3js/lecture/9PorW/practice-creating-tooltips
+
+#tooltip{
+	border: solid 1px black;
+	padding: 5px;
+	position: absolute; //can move it now
+	display: none;
+}
+
+<div id="tooltip">Tooltip</div>	
+
+function showTooltip(text, coords) {
+	d3.select("#tooltip").text(text)
+		.style("top", coords[1])
+		.style("left", coords[0])
+		.style("display", "block")
+}
+
+
+......
+.on("mouseenter", d => {
+	showTooltip(d.Country, [d3.event.clientX, d3.event.clientY])
+})
+.on("mouseleave", d => {
+	d3.select("#tooltip").style("display", "none")
+})
